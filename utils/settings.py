@@ -1,21 +1,51 @@
-import pymongo
-import bson
 
-def get_setting(db: pymongo.MongoClient, server_id: int, key: str, default: str) -> str | None:
-    femboybot_db = db.get_database('FemboyBot')
-    settings_coll = femboybot_db.get_collection('Settings')
-    settings_serv = settings_coll.find_one({ 'server_id': server_id })
-    if settings_serv is None:
-        insert_result = settings_coll.insert_one({ 'server_id': server_id, 'settings': {key: default} })
-        settings_serv = settings_coll.find_one({ '_id': bson.ObjectId(insert_result.inserted_id) })
+from database import conn as db
 
-    if key not in settings_serv['settings']:
-        settings_coll.update_one({ 'server_id': server_id }, { '$set': { f'settings.{key}': default }})
-        settings_serv = settings_coll.find_one({ 'server_id': server_id })
 
-    return settings_serv['settings'][key]
+def db_init():
+    cur = db.cursor()
+    cur.execute("""create table if not exists settings
+(
+    guild_id integer,
+    key      text,
+    value    text,
+    constraint settings_pk
+        primary key (guild_id, key)
+);""")
+    cur.close()
+    db.commit()
 
-def set_setting(db: pymongo.MongoClient, server_id: int, key: str, value: str) -> None:
-    femboybot_db = db.get_database('FemboyBot')
-    settings_coll = femboybot_db.get_collection('Settings')
-    settings_coll.update_one({ 'server_id': server_id }, { '$set': { f'settings.{key}': value }})
+
+def db_get_key(guild_id: int, key: str):
+    db_init()
+    cur = db.cursor()
+    cur.execute(
+        "SELECT value FROM settings WHERE guild_id = ? AND key = ?", (guild_id, key))
+    result = cur.fetchone()
+    cur.close()
+    return result[0] if result else None
+
+
+def db_set_key(guild_id: int, key: str, value: str):
+    db_init()
+    cur = db.cursor()
+    cur.execute(
+        "select * from settings where guild_id = ? and key = ?", (guild_id, key))
+    if cur.fetchone():
+        cur.execute(
+            "update settings set value = ? where guild_id = ? and key = ?", (value, guild_id, key))
+    else:
+        cur.execute(
+            "insert into settings (guild_id, key, value) values (?, ?, ?)", (guild_id, key, value))
+    cur.close()
+    db.commit()
+
+
+def get_setting(server_id: int, key: str, default: str) -> str:
+    db_init()
+    return db_get_key(server_id, key) or default
+
+
+def set_setting(server_id: int, key: str, value: str) -> None:
+    db_init()
+    db_set_key(server_id, key, value)
