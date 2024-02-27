@@ -21,7 +21,7 @@ bot = discord.Bot(intents=discord.Intents.all())
 @bot.event
 async def on_ready():
     print('ready')
-    await bot.change_presence(activity=discord.Game(name="v2.0"))
+    await bot.change_presence(activity=discord.Activity(type=discord.ActivityType.playing, name="v2.0"))
 
 
 @bot.event
