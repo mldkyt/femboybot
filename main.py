@@ -19,6 +19,12 @@ bot = discord.Bot(intents=discord.Intents.all())
 
 
 @bot.event
+async def on_ready():
+    print('ready')
+    await bot.change_presence(activity=discord.Game(name="v2.0"))
+
+
+@bot.event
 async def on_application_command_error(ctx: discord.Interaction, error):
     if isinstance(error, discord_commands_ext.CommandOnCooldown):
         await ctx.response.send_message(f'Cooldown! Try again after {error.retry_after} seconds.', ephemeral=True)
