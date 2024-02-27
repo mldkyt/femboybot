@@ -14,5 +14,7 @@
     "middlewares": {
         "blocklist": true,
         "premium": true
-    }
+    },
+    "owner_id": 0,
+    "admni_guild": 0
 }

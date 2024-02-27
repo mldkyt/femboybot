@@ -1,4 +1,5 @@
 import json
+import os
 
 import discord
 from discord.ext import commands as discord_commands_ext
@@ -8,6 +9,11 @@ from utils.blocked import BlockedUserError, BlockedServerError
 
 with open('config.json', 'r', encoding='utf8') as f:
     data = json.load(f)
+
+if 'owner_id' in data:
+    os.environ['OWNER_ID'] = str(data['owner_id'])
+if 'admin_guild' in data:
+    os.environ['ADMIN_GUILD'] = str(data['admin_guild'])
 
 bot = discord.Bot(intents=discord.Intents.all())
 
