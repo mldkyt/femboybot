@@ -1,3 +1,7 @@
+import os
 import sqlite3
 
-conn = sqlite3.connect('femboybot.db')
+if not os.path.exists('data'):
+    os.mkdir('data')
+
+conn = sqlite3.connect('data/femboybot.db')
