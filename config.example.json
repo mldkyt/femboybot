@@ -11,12 +11,13 @@
         "polls": true,
         "feedback": true,
         "logging": true,
-        "settings_cmds": true
+        "settings_cmds": true,
+        "admin_cmds": false
     },
     "middlewares": {
         "blocklist": true,
         "premium": true
     },
     "owner_id": 0,
-    "admni_guild": 0
+    "admin_guild": 0
 }
