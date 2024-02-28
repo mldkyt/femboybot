@@ -1,5 +1,6 @@
 import discord
 from database import conn as db
+from utils.blocked import is_blocked
 
 
 def add_feature_report(type: str, user_id: int, feature: str):
@@ -17,12 +18,14 @@ class SupportCmd(discord.Cog):
         self.bot = bot
 
     @discord.slash_command(name="support", help="Get support for the bot")
+    @is_blocked()
     async def feedback(self, ctx: discord.Interaction):
         await ctx.response.send_message(
             "You can get support [here](<https://mldkyt.com/forumsrules?go=https://mldkyt.com/forums/viewforum.php?f"
             "=15>)")
 
     @discord.slash_command(name="website", help="Get the website link")
+    @is_blocked()
     async def website(self, ctx: discord.Interaction):
         await ctx.response.send_message("You can visit the website [here](<https://mldkyt.com/project/femboybot>)")
 
@@ -30,11 +33,13 @@ class SupportCmd(discord.Cog):
         name="feedback", description="Give feedback for the bot")
 
     @feedback_subcommand.command(name="bug", description="Report a bug")
+    @is_blocked()
     async def report_bug(self, ctx: discord.Interaction, bug: str):
         add_feature_report('bug', ctx.user.id, bug)
         await ctx.response.send_message("Thank you for reporting the bug!")
 
     @feedback_subcommand.command(name="feature", description="Suggest a feature")
+    @is_blocked()
     async def suggest_feature(self, ctx: discord.Interaction, feature: str):
         add_feature_report('feature', ctx.user.id, feature)
         await ctx.response.send_message("Thank you for suggesting the feature!")

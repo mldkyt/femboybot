@@ -1,6 +1,7 @@
 
 import discord
 
+from utils.blocked import is_blocked
 from utils.settings import get_setting, set_setting
 from discord.ext import commands as cmds
 
@@ -15,6 +16,7 @@ class SettingsCommands(discord.Cog):
     @settings_subcommand.command(name="logging_channel", description="Set the logging channel")
     @cmds.guild_only()
     @cmds.has_guild_permissions(manage_guild=True)
+    @is_blocked()
     async def settings_logging_channel(self, ctx: discord.Interaction, channel: discord.TextChannel = None):
         if channel is None:
             setting = get_setting(ctx.guild.id, 'logging_channel', '0')

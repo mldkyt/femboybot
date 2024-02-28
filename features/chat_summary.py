@@ -14,7 +14,8 @@ class ChatSummary(discord.Cog):
         cur = db.cursor()
         cur.execute(
             'CREATE TABLE IF NOT EXISTS chat_summary(guild_id INTEGER, channel_id INTEGER, enabled INTEGER, messages INTEGER, owos INTEGER, nyas INTEGER, cats INTEGER)')
-        cur.execute('CREATE INDEX IF NOT EXISTS chat_summary_i ON chat_summary(guild_id, channel_id)')
+        cur.execute(
+            'CREATE INDEX IF NOT EXISTS chat_summary_i ON chat_summary(guild_id, channel_id)')
         cur.execute(
             'CREATE TABLE IF NOT EXISTS chat_summary_members(guild_id INTEGER, channel_id INTEGER, member_id INTEGER, messages INTEGER)')
         cur.execute(
@@ -70,7 +71,8 @@ class ChatSummary(discord.Cog):
             return
 
         cur = db.cursor()
-        cur.execute('SELECT guild_id, channel_id, messages, owos, nyas, cats FROM chat_summary WHERE enabled = 1')
+        cur.execute(
+            'SELECT guild_id, channel_id, messages, owos, nyas, cats FROM chat_summary WHERE enabled = 1')
         for i in cur.fetchall():
             guild = self.bot.get_guild(i[0])
             if guild is None:
@@ -105,12 +107,14 @@ class ChatSummary(discord.Cog):
 
             cur.execute('UPDATE chat_summary SET messages = 0, owos = 0, nyas = 0, cats = 0 WHERE guild_id = ? AND'
                         ' channel_id = ?', (i[0], i[1]))
-            cur.execute('DELETE FROM chat_summary_members WHERE guild_id = ? AND channel_id = ?', (i[0], i[1]))
+            cur.execute(
+                'DELETE FROM chat_summary_members WHERE guild_id = ? AND channel_id = ?', (i[0], i[1]))
 
         cur.close()
         db.commit()
 
-    chat_summary_subcommand = discord.SlashCommandGroup(name='chatsummary', description='Chat summary')
+    chat_summary_subcommand = discord.SlashCommandGroup(
+        name='chatsummary', description='Chat summary')
 
     @chat_summary_subcommand.command(name="add", description="Add a channel to count to chat summary")
     @commands_ext.guild_only()
@@ -170,6 +174,7 @@ class ChatSummary(discord.Cog):
     # @chat_summary_subcommand.command(name="test", description="Test command for testing purposes")
     # @commands_ext.guild_only()
     # @commands_ext.has_permissions(manage_guild=True)
+    # @is_blocked()
     # async def test_summarize(self, ctx: discord.Interaction):
     #     cur = db.cursor()
     #     cur.execute('SELECT guild_id, channel_id, messages, owos, nyas, cats FROM chat_summary WHERE enabled = 1')

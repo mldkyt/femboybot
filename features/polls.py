@@ -29,7 +29,8 @@ class Polls(discord.Cog):
             await interaction.response.send_message("Poll is closed by an administrator.", ephemeral=True)
             return
 
-        status = data.add_vote(interaction.user.id, int(interaction.custom_id.split('_')[1]))
+        status = data.add_vote(interaction.user.id, int(
+            interaction.custom_id.split('_')[1]))
         if status == "status:already_voted":
             await interaction.response.send_message("You have already voted!", ephemeral=True)
             return
@@ -40,11 +41,13 @@ class Polls(discord.Cog):
 
         await interaction.response.send_message(f"You have voted for `{status}`!", ephemeral=True)
 
-    polls_subcommand = discord.SlashCommandGroup(name="polls", description="Create a poll")
+    polls_subcommand = discord.SlashCommandGroup(
+        name="polls", description="Create a poll")
 
     @polls_subcommand.command(name="create", description="Create a poll")
     @dc_cmds.guild_only()
     @dc_cmds.has_permissions(manage_guild=True)
+    @is_blocked()
     async def command_create_poll(self, ctx: discord.Interaction, question: str, ans1: str, ans2: str, ans3: str = "",
                                   ans4: str = "", ans5: str = ""):
         answers = [ans1, ans2]
@@ -71,8 +74,10 @@ class Polls(discord.Cog):
     @is_blocked()
     @discord.option(name="msg_link", description="The link to the poll message. Copy by right clicking the message.",
                     required=True)
+    @is_blocked()
     async def command_poll_info(self, ctx: discord.Interaction, msg_link: str):
-        match = re.match(r'^https?://discord.com/channels/(\d+)/(\d+)/(\d+)$', msg_link)
+        match = re.match(
+            r'^https?://discord.com/channels/(\d+)/(\d+)/(\d+)$', msg_link)
         if match is None or len(match.groups()) != 3:
             await ctx.response.send_message("Invalid message link!", ephemeral=True)
             return
@@ -113,7 +118,8 @@ class Polls(discord.Cog):
     @discord.option(name="msg_link", description="The link to the poll message. Copy by right clicking the message.",
                     required=True)
     async def command_close_poll(self, ctx: discord.Interaction, msg_link: str):
-        match = re.match(r'^https?://discord.com/channels/(\d+)/(\d+)/(\d+)$', msg_link)
+        match = re.match(
+            r'^https?://discord.com/channels/(\d+)/(\d+)/(\d+)$', msg_link)
         if match is None or len(match.groups()) != 3:
             await ctx.response.send_message("Invalid message link!", ephemeral=True)
             return
@@ -143,7 +149,8 @@ class Polls(discord.Cog):
     @discord.option(name='msg_link', description='The link to the poll message. Copy by right clicking the message.',
                     required=True)
     async def command_reopen_poll(self, ctx: discord.Interaction, msg_link: str):
-        match = re.match(r'^https?://discord.com/channels/(\d+)/(\d+)/(\d+)$', msg_link)
+        match = re.match(
+            r'^https?://discord.com/channels/(\d+)/(\d+)/(\d+)$', msg_link)
         if match is None or len(match.groups()) != 3:
             await ctx.response.send_message('Invalid message link!', ephemeral=True)
             return
@@ -172,7 +179,8 @@ class Poll(dc_ui.View):
         super().__init__(timeout=None)
 
         for i in range(len(answers)):
-            btn = dc_ui.Button(style=discord.ButtonStyle.primary, label=answers[i], custom_id=f'poll_{i + 1}')
+            btn = dc_ui.Button(style=discord.ButtonStyle.primary,
+                               label=answers[i], custom_id=f'poll_{i + 1}')
             self.add_item(btn)
 
 

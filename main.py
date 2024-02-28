@@ -4,23 +4,18 @@ import os
 import discord
 from discord.ext import commands as discord_commands_ext
 
-from features import welcoming, leveling, antiraid, chat_streaks, chat_revive, chat_summary, reaction_roles, polls, feedback_cmd, logging, settings_cmds
+from features import welcoming, leveling, antiraid, chat_streaks, chat_revive, chat_summary, reaction_roles, polls, feedback_cmd, logging, settings_cmds, admin_cmds
 from utils.blocked import BlockedUserError, BlockedServerError
 
 with open('config.json', 'r', encoding='utf8') as f:
     data = json.load(f)
-
-if 'owner_id' in data:
-    os.environ['OWNER_ID'] = str(data['owner_id'])
-if 'admin_guild' in data:
-    os.environ['ADMIN_GUILD'] = str(data['admin_guild'])
 
 bot = discord.Bot(intents=discord.Intents.all())
 
 
 @bot.event
 async def on_ready():
-    print('ready')
+    print('Ready')
     await bot.change_presence(activity=discord.Activity(type=discord.ActivityType.playing, name="v2.0"))
 
 
@@ -84,5 +79,8 @@ if data['features']['logging']:
 
 if data["features"]["settings_cmds"]:
     bot.add_cog(settings_cmds.SettingsCommands(bot))
+
+if data["features"]["admin_cmds"]:
+    bot.add_cog(admin_cmds.AdminCommands(bot))
 
 bot.run(data['token'])
