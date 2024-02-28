@@ -9,7 +9,9 @@
         "chatsummary": true,
         "reactionroles": true,
         "polls": true,
-        "feedback": true
+        "feedback": true,
+        "logging": true,
+        "settings_cmds": true
     },
     "middlewares": {
         "blocklist": true,

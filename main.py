@@ -4,7 +4,7 @@ import os
 import discord
 from discord.ext import commands as discord_commands_ext
 
-from features import welcoming, leveling, antiraid, chat_streaks, chat_revive, chat_summary, reaction_roles, polls, feedback_cmd
+from features import welcoming, leveling, antiraid, chat_streaks, chat_revive, chat_summary, reaction_roles, polls, feedback_cmd, logging, settings_cmds
 from utils.blocked import BlockedUserError, BlockedServerError
 
 with open('config.json', 'r', encoding='utf8') as f:
@@ -78,5 +78,11 @@ if (data["features"]["polls"]):
 
 if (data["features"]["feedback"]):
     bot.add_cog(feedback_cmd.SupportCmd(bot))
+
+if data['features']['logging']:
+    bot.add_cog(logging.Logging(bot))
+
+if data["features"]["settings_cmds"]:
+    bot.add_cog(settings_cmds.SettingsCommands(bot))
 
 bot.run(data['token'])
