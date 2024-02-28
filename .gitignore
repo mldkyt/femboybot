@@ -3,3 +3,4 @@ venvlappie/
 /config.json
 **/__pycache__/
 data/
+sync.ffs_db
